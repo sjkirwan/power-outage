@@ -18,7 +18,7 @@ The dataset is from the University of Purdue since 2018 [https://engineering.pur
 ## Data Cleaning and Exploratory Data Analysis
 
 ### Data Cleaning
-With each additional minute, the power goes out, and more problems arise. Knowing the length of a power outage is vital in addressing its severity. Here, I combined the 'OUTAGE.START.DATE' and 'OUTAGE.START.TIME' columns into one timestamp object and the 'OUTAGE.END.DATE' and 'OUTAGE.END.TIME' columns into another timestamp object. In addition to realigning the columns, I added a column representing whether a State's power sector is classified as regulated.
+With each additional minute, the power goes out, and more problems arise. Knowing the length of a power outage is vital in addressing its severity. Here, I combined the 'OUTAGE.START.DATE' and 'OUTAGE.START.TIME' columns into one timestamp object and the 'OUTAGE.END.DATE' and 'OUTAGE.END.TIME' columns into another timestamp object. In addition to realigning the columns, I added a column representing whether a State's power sector is classified as regulated. I got the informatiom about the regulation status of a states power from [https://www.electricchoice.com/map-deregulated-energy-markets/].
 
 ### Univariate Analysis
 <iframe
@@ -43,6 +43,7 @@ One factor that might indicate a significant power outage is the price of electr
 
 
 ## Interesting Aggregates
+
 | CLIMATE.REGION     |   False |   True |
 |:-------------------|--------:|-------:|
 | Central            |       2 |      5 |
@@ -63,6 +64,7 @@ Here, you can see a pivot table showing the number of deregulated states in each
 The column with the most missing columns is the 'DEMAND.LOSS.MW' column below. I took the first and last ten rows of the data frame with the 'DEMAND.LOSS.MW,' and two other columns that look like they might be related.
 
 **FIRST TEN COLUMNS**
+
 |   DEMAND.LOSS.MW |   OUTAGE.DURATION |   PI.UTIL.OFUSA |
 |-----------------:|------------------:|----------------:|
 |                0 |              1548 |             0.3 |
@@ -117,6 +119,7 @@ The 'DEMAND.LOSS.MW' columns' missingness might be related to the 'OUTAGE.DURATI
 
 ### Hypothesis Testing
 **NULL HYPOTHESIS**: The distribution of the length of a power outage in regulated states is the same as in deregulated states
+
 **ALTERNATIVE HYPOTHESIS**: Deregulated states' power outages last longer than regulated states.
 
 Since 'OUTAGE.DURATION' is numerical data, I used the difference in mean as test statistics with a significance level of 0.05
@@ -150,12 +153,15 @@ After running the model, I get a mean absolute error of 7,431. This is very larg
 
 
 ## Final Model
-    For my final model, I changed away from a Lasso Regression to a Random Forest Regression as Lasso assumes a linear relationship between features and target, which might not be the case here; it also helped that Random Forest Regression has a lower mean absolute error. In addition, I changed my numerical variables from 'TOTAL.CUSTOMER' to 'POPDEN_RURAL' because the 'TOTAL.CUSTOMER' column is less indicative of a more complex power grid as population density. In addition, I standardized 'POPDEN_RURAL.' 
-    In exploratory analysis, I found that about varied from region to region, so I added a categorical variable, 'CLIMATE.REGION.' I believe that since industry requires a large amount of electricity, ' IND.PERCEN' could indicate a more complex grid that could take longer to fix. I engineered this feature with a quartile transformer since this category had significant outliers. The second feature I engineered is I binarized the 'PC.REALGSP.CHANGE' column to indicate whether the change was positive or negative, as a state that is losing GDP might invest less in its grid, causing prolonged power outages. To find the best hyperparameters, I used GridSearchCV and found keeping most of the defaults was best. Overall, these changes decreased my mean absolute error from 9,429 to 2,749. You can see that this model performed better than the previous model, but there's still a lot to improve upon.
+For my final model, I changed away from a Lasso Regression to a Random Forest Regression as Lasso assumes a linear relationship between features and target, which might not be the case here; it also helped that Random Forest Regression has a lower mean absolute error. In addition, I changed my numerical variables from 'TOTAL.CUSTOMER' to 'POPDEN_RURAL' because the 'TOTAL.CUSTOMER' column is less indicative of a more complex power grid as population density. In addition, I standardized 'POPDEN_RURAL.' 
+
+In exploratory analysis, I found that about varied from region to region, so I added a categorical variable, 'CLIMATE.REGION.' I believe that since industry requires a large amount of electricity, ' IND.PERCEN' could indicate a more complex grid that could take longer to fix. I engineered this feature with a quartile transformer since this category had significant outliers. The second feature I engineered is I binarized the 'PC.REALGSP.CHANGE' column to indicate whether the change was positive or negative, as a state that is losing GDP might invest less in its grid, causing prolonged power outages. The final column I added is the 'REGULATED' column I created earlier as this proved to be related to longer power outages.
+
+To find the best hyperparameters, I used GridSearchCV and found keeping most of the defaults was best. Overall, these changes decreased my mean absolute error from 9,429 to 2,749. You can see that this model performed better than the previous model, but there's still a lot to improve upon.
 
 
 <iframe
-  src="assets/New_Final_model.html.html"
+  src="assets/New_Final_model.html"
   width="800"
   height="600"
   frameborder="0"
