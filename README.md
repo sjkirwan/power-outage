@@ -34,6 +34,7 @@ Each additional minute the powers out for more problems arrise. This makes knowi
 ></iframe>
 
 # Interesting Aggregates
+
 |   Central |   East North Central |   Northeast |   Northwest |   South |   Southeast |   Southwest |   West |   West North Central |\n|----------:|---------------------:|------------:|------------:|--------:|------------:|------------:|-------:|---------------------:|\n|         2 |                    1 |           9 |           1 |       1 |           1 |         nan |      1 |                  nan |\n|         5 |                    3 |           2 |           2 |       5 |           5 |           4 |      1 |                    5 |
 
 
@@ -54,6 +55,22 @@ Each additional minute the powers out for more problems arrise. This makes knowi
   frameborder="0"
 ></iframe>
 
+## Hypothesis Testing
+
+# Hypothesis Testing
+
+Clearly state your null and alternative hypotheses, your choice of test statistic and significance level, the resulting 
+p
+-value, and your conclusion. Justify why these choices are good choices for answering the question you are trying to answer.
+
+Optional: Embed a visualization related to your hypothesis test in your website.
+
+<iframe
+  src="assets/hypothesis_test.html"
+  width="600"
+  height="600"
+  frameborder="0"
+></iframe>
 
 # power-outage
 
