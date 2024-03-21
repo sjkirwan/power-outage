@@ -3,20 +3,31 @@
 ## Introduction
 Lights working and the internet running are often taken for granted until they suddenly disappear during a power outage. In this project, I aim to delve into a comprehensive dataset related to power outages. This dataset includes crucial information on various aspects of outages, such as electricity consumption, regional economic characteristics, regional land-use patterns, regional climate data, and most importantly, outage events. My goal is to find the factors that make some poweroutages more sever then others and well as use these fatcors to predict a power ouatges severity
 
-The dataset is from University of Purdue since 2018 [https://engineering.purdue.edu/LASCI/research-data/outages]. The data is divided into five sections:such as electricity consumption, regional economic characteristics, regional land-use patterns, regional climate data, and most importantly, outage events. The dataframe for Poweroutages has 1,526 rows. Each row represents an outage that happened in a state. If a poweroutage affects more than one state their will be a row for each event. For further research purposes, I added two columns represnting a timestamp for the start of and outage and end. Most importantly I am adding a columns represnting wether a State's power sector is classified as regulated. This is becuase in teh past a major cause of teh Claifornia's rolling blakcouts in the early 2000s was the deregulation of its power sector. I want to test if this is an outlier ouccurance or maybe states that have a deregulate dpower sector have more outages. 
+The dataset is from University of Purdue since 2018 [https://engineering.purdue.edu/LASCI/research-data/outages]. The data is divided into five sections:such as electricity consumption, regional economic characteristics, regional land-use patterns, regional climate data, and most importantly, outage events. The dataframe for Poweroutages has 1,526 rows. Each row represents an outage that happened in a state. If a poweroutage affects more than one state their will be a row for each event. For further research purposes, I added two columns represnting a timestamp for the start of and outage and end. Most importantly I am adding a columns represnting wether a State's power sector is classified as regulated. This is becuase in the past a major cause of teh Claifornia's rolling blakcouts in the early 2000s was the deregulation of its power sector. I want to test if this is an outlier ouccurance or maybe states that have a deregulated power sectors have more outages. 
+
+The first step in this project is an data cleaning and exploratory data analysis. The goal of this is to prepare the dataset for analysis ot comr and to begin to get a sense of how the columns are related.
+
+The the missingness analysis, we figure out the missingness of the description, review, and rating in the merged dataframe. In the NMAR analysis, we focus on the review column and provide a reasonable description about the missingness of some reviews. In the MCAR and MAR analysis, we implement the dependency test to explore the dependency of the missingness of the rating column in the merged dataframe. More specifically, we test the dependency of the missingness on the minutes and the calories.
+
+Moreover, we would focus on the research question that, are complex recipes and simple recipes rated in the same scale. We would define recipe with fewer than 10 steps as simple recipes, and with more than 10 steps as complex recipes. We would analyze the rating scale related to the complexity of the recipe.
+
+This research question could be important for recipe-designers and food.com website holder. By answering this research question, we could possibly provide the viewpoints to the rating scale for people who use this website. With our result stating whether people would prefer complex recipes or not, recipe-designers could design more complex/simple recipes to meet the need to people using the website.
 
 ## Project Steps
-1. **Data Cleaning and Exploratory Data Analysis**: We will start by cleaning the dataset and conducting exploratory data analysis to obtain basic information about the data and explore relationships between columns.
-2. **Missingness Analysis**: We will assess the missingness contained in the dataset, focusing on the description, review, and rating columns. Specifically, we will analyze the missingness mechanism (NMAR, MCAR, or MAR) and provide insights into the missingness of some reviews.
-3. **NMAR Analysis**: In-depth analysis of the review column to understand the reasons behind missing reviews.
-4. **MCAR and MAR Analysis**: Imputation strategies for handling missing data.
+1. **Data Cleaning and Exploratory Data Analysis**: The first step in this project is an data cleaning and exploratory data analysis. The goal of this is to prepare the dataset for analysis ot comr and to begin to get a sense of how the columns are related.
+2. **Assesment of Missingness**: I will assess the missingness contained in the dataset, focusing on the 'OUTAGE.DURATION','PI.UTIL.OFUSA', and 'DEMAND.LOSS.MW' columns.
+3. **Hypothesis Testing** In this section I will be answering my resaerch question about whether the severity of poweroutages is higher in states that have deregulated their power sector.
+4. **Framing a Prediction Problem** In this section I will address how I will try and predict the severity of a power outage
+5. **Baseline Model** In this section I will be making a basic model to predict the severity of a power outage
+6. **Final Model** In this section I will be improving upon the basic model by adding feature, engineering new features from columns, and to adjusting hyperperaters
+7. **Fairness Analysis** In this section I will adress if the final model's accuracy varries between wealthy and poor states
 
-Stay tuned for more insights as we delve into the fascinating world of recipes and ratings!
 
 ## Data Cleaning and Exploratory Data Analysis
 
 # Data Cleaning
-Each additional minute the powers out for more problems arrise. This makes knowing the length of a power outage vital in addressing its serverity. Here I combined the OUTAGE.START.DATE and OUTAGE.START.TIME columns into one timestamp object and OUTAGE.END.DATE and OUTAGE.END.TIME into another timestamp object.
+Each additional minute the powers out for more problems arrise. This makes knowing the length of a power outage vital in addressing its serverity. Here I combined the OUTAGE.START.DATE and OUTAGE.START.TIME columns into one timestamp object and OUTAGE.END.DATE and OUTAGE.END.TIME into another timestamp object. In addition to realigning the columns I added a column represnting whether a State's power sector is classified as regulated.
+
 # Univariate Analysis
 <iframe
   src="assets/Outages-Duration-Histogram.html"
@@ -24,6 +35,8 @@ Each additional minute the powers out for more problems arrise. This makes knowi
   height="600"
   frameborder="0"
 ></iframe>
+
+Throughout this process Outage Duration will used as a metric of the serverity of a power outage. Here you see how most power outages are fixed quickly.
 
 <iframe
   src="assets/REGULATED.html"
@@ -40,13 +53,14 @@ Each additional minute the powers out for more problems arrise. This makes knowi
   frameborder="0"
 ></iframe>
 
+One factor that I thought might be indicative of a major poweroutage is the price of electricty. Thinking higher prices might mean power companies are trying to encorage less use. While there doesnt seem to be a major correlation between these two when teh regulatd varible is added you can see clearly that unregulated states have higher electricty prices!!
 
 
 # Interesting Aggregates
 
 |   Central |   East North Central |   Northeast |   Northwest |   South |   Southeast |   Southwest |   West |   West North Central |\n|----------:|---------------------:|------------:|------------:|--------:|------------:|------------:|-------:|---------------------:|\n|         2 |                    1 |           9 |           1 |       1 |           1 |         nan |      1 |                  nan |\n|         5 |                    3 |           2 |           2 |       5 |           5 |           4 |      1 |                    5 |
 
-Here you can see a pibvot tbale of where dereguated states are located. You can see that theyre consentrated in the northeast.
+Here you can see a pivot tbale of where dereguated states are located. You can see that theyre consentrated in the northeast.
 
 ## Assessment of Missingness
 
@@ -79,12 +93,12 @@ Here you can see a pibvot tbale of where dereguated states are located. You can 
 |               20 |               155 |             2.2 |
 |              nan |              3621 |             2.3 |
 
-
-I believe that The MW.LOSS column is MAR
+In these two slices of the power outage dataframe it looks like when 'OUTAGE.DURATION' is high and 'PI.UTIL.OFUSA' is high 'DEMAND.LOSS.MW'
+tends to be missing. This leads me to believe that 'DEMAND.LOSS.MW' is MAR and is related to these two columns. 
 
 # Missingness Dependency
-0.8363394331374345 differnece observed of the PI.UTIL.OFUSA if MW is missing or not this has an extremely low p values of 0.01
-and can be seen by this grph
+To test this idea I perform a permuation test on 'DEMAND.LOSS.MW' and 'PI.UTIL.OFUSA' columns. For my test statictic I get a observed 0.8363394331374345 differnece in means of 'PI.UTIL.OFUSA' groupded by the missingness of 'DEMAND.LOSS.MW'. Then throuhg teh permuation test I get a p value of 0.01 so its clear that the two distributions of 'PI.UTIL.OFUSA' are different. This seems to make clear that 'DEMAND.LOSS.MW' is MAR.
+
 <iframe
   src="assets/DiffMeans_PI.UTIL.OFUSA.html"
   width="600"
@@ -92,9 +106,8 @@ and can be seen by this grph
   frameborder="0"
 ></iframe>
 
+I also believed that the 'DEMAND.LOSS.MW' columns's missingness might be related to the 'OUTAGE.DURATION' column. As before test this idea I perform a permuation test on the 'DEMAND.LOSS.MW' and 'OUTAGE.DURATION' columns. For my test statictic I get a observed 128.76779051172707 differnece in means of 'OUTAGE.DURATION' groupded by the missingness of 'DEMAND.LOSS.MW'. This seemed promessing howver I got a very high value of 0.678, so the 'DEMAND.LOSS.MW' columns's missingness is probably not related to the 'OUTAGE.DURATION' column
 
-128.76779051172707 differnece observed of the OUTAGE.DURATION if MW is missing or not this has an extremely low p values of 0.678
-and can be seen by this grph
 <iframe
   src="assets/DiffMeans_OUTAGE.DURATION.html"
   width="600"
@@ -103,29 +116,16 @@ and can be seen by this grph
 ></iframe>
 
 
-
-<iframe
-  src="assets/PI.UTIL.OFUSA_MISSING.html"
-  width="600"
-  height="600"
-  frameborder="0"
-></iframe>
-<iframe
-  src="assets/OUTAGE.DURATION_MISSING.html"
-  width="600"
-  height="600"
-  frameborder="0"
-></iframe>
-
 ## Hypothesis Testing
 
 # Hypothesis Testing
 
-Clearly state your null and alternative hypotheses, your choice of test statistic and significance level, the resulting 
-p 0.0005 we reject the null hypothesis that 
--value, and your conclusion. Justify why these choices are good choices for answering the question you are trying to answer.
+**NULL HYPOTHESIS**: The distribution of the length of a power outage in regulated states is the same as deregulated states
+**ALTERNATIVE HYPOTHESIS**: Deregulated states power outages last longer than regulated states.
 
-Optional: Embed a visualization related to your hypothesis test in your website.
+Since 'OUTAGE.DURATION' is numerical data I used the difference in mean as test statistics with a significance level of 0.05
+
+The observed difference in mean is []
 
 <iframe
   src="assets/hypothesis_test.html"
@@ -133,6 +133,9 @@ Optional: Embed a visualization related to your hypothesis test in your website.
   height="600"
   frameborder="0"
 ></iframe>
+
+After we ran our permuation test we got a p-value of 0.0005. This mean we reject the null hypothesis that the distribution of the length of a power outage in regulated states is the same as deregulated states
+
 
 # Framing a Prediction Problem
 My prediction goal is to predict the severity in terms of duration of a power outage. I'm choosing to use outage duration as the severity metric as MW and customers affected are both missing substantial data entires. This mdoel will be a regression model. I will evaluate the effectiveness with mean absolute error. Most varibles will be known at the time of the prediction.
@@ -156,7 +159,7 @@ Describe your model and state the features in your model, including how many are
 Tip: Make sure to hit all of the points above: many projects in the past have lost points for not doing so.
 
 # Final Model
-2570.33
+For My Final model I changed away from a Logistic Regression to a Random Forest Regression as it had a lower mean absolute error. In addition I chnaged my numerical varibles from [] to [] and standarzied them. I also added categorical varibles, such as []. I engineered [] varible by quartiled to reduce the effect of its outliers. To find the best hyperparamters I used GridSearchCV and found keeping most the deflaut was best. Overall these chnages decreased my mean absolute error form 8,305 to 2,570.
 
 <iframe
   src="assets/Final_model.html.html"
