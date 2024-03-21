@@ -1,10 +1,9 @@
 # Power Outages Research Project
 
 ## Introduction
-Lights working the internet running are things you take for granted until they're gone. When a power outage happens modern necesities are taken away. In this project, I aim to explore a dataset about poweroutages. This dataset includes information on a poweroutages REGIONAL ELECTRICITY CONSUMPTION INFORMATION, REGIONAL ECONOMIC CHARACTERISTICS,REGIONAL LAND-USE CHARACTERICS,REGIONAL CLIMATE INFORMATION, and most importantly OUTAGE EVENTS INFORMATION. My goal is to find the factors that make some poweroutages more sever then others and well as use these fatcors to predict a power ouatges severity
+Lights working and the internet running are often taken for granted until they suddenly disappear during a power outage. In this project, I aim to delve into a comprehensive dataset related to power outages. This dataset includes crucial information on various aspects of outages, such as electricity consumption, regional economic characteristics, regional land-use patterns, regional climate data, and most importantly, outage events. My goal is to find the factors that make some poweroutages more sever then others and well as use these fatcors to predict a power ouatges severity
 
-The dataset is sourced from food.com and contains recipes and reviews posted since 2008. The data is divided into two parts: recipes and ratings. The recipes dataset includes information such as recipe name, ID, preparation time, contributor ID, submission date, tags, nutrition information, number of steps, steps text, and description. The ratings dataset, on the other hand, contains user ID, recipe ID, date of interaction, rating, and review text.
-The dataframe for recipes has 83,782 rows, meaning 83,782 unique recipes. The dataframe for ratings has 731,927 rows, each representing a review on the recipe. For further research purposes, we add a column for average rating for each recipe in the dataframe, allowing us to analyze the features of recipes and corresponding ratings.
+The dataset is from University of Purdue since 2018. The data is divided into five sections:such as electricity consumption, regional economic characteristics, regional land-use patterns, regional climate data, and most importantly, outage events. The dataframe for Poweroutages has 1,526 rows. Each row represents an outage that happened in a state. If a poweroutage affects more than one state their will be a row for each event. For further research purposes, I added two columns represnting a timestamp for the start of and outage and end. Most importantly I am adding a columns represnting wether a State's power sector is classified as regulated. This is becuase in teh past a major cause of teh Claifornia's rolling blakcouts in the early 2000s was the deregulation of its power sector. I want to test if this is an outlier ouccurance or maybe states that have a deregulate dpower sector have more outages. 
 
 ## Project Steps
 1. **Data Cleaning and Exploratory Data Analysis**: We will start by cleaning the dataset and conducting exploratory data analysis to obtain basic information about the data and explore relationships between columns.
@@ -20,28 +19,86 @@ Stay tuned for more insights as we delve into the fascinating world of recipes a
 Each additional minute the powers out for more problems arrise. This makes knowing the length of a power outage vital in addressing its serverity. Here I combined the OUTAGE.START.DATE and OUTAGE.START.TIME columns into one timestamp object and OUTAGE.END.DATE and OUTAGE.END.TIME into another timestamp object.
 # Univariate Analysis
 <iframe
-  src="assets/REGULATED.html"
-  width="600"
-  height="600"
-  frameborder="0"
-></iframe>
-# Bivariate Analysis
-<iframe
   src="assets/Outages-Duration-Histogram.html"
   width="600"
   height="600"
   frameborder="0"
 ></iframe>
 
+<iframe
+  src="assets/REGULATED.html"
+  width="600"
+  height="600"
+  frameborder="0"
+></iframe>
+
+# Bivariate Analysis
+<iframe
+  src="assets/REGULATED_groups.html"
+  width="600"
+  height="600"
+  frameborder="0"
+></iframe>
+
+
+
 # Interesting Aggregates
 
 |   Central |   East North Central |   Northeast |   Northwest |   South |   Southeast |   Southwest |   West |   West North Central |\n|----------:|---------------------:|------------:|------------:|--------:|------------:|------------:|-------:|---------------------:|\n|         2 |                    1 |           9 |           1 |       1 |           1 |         nan |      1 |                  nan |\n|         5 |                    3 |           2 |           2 |       5 |           5 |           4 |      1 |                    5 |
 
-
+Here you can see a pibvot tbale of where dereguated states are located. You can see that theyre consentrated in the northeast.
 ## Assessment of Missingness
 # NMAR Analysis
+|   DEMAND.LOSS.MW |   OUTAGE.DURATION |   PI.UTIL.OFUSA |
+|-----------------:|------------------:|----------------:|
+|                0 |              1548 |             0.3 |
+|              nan |               870 |             0.4 |
+|                0 |                 0 |             0.4 |
+|                0 |               nan |             0.4 |
+|              485 |               220 |             0.4 |
+|              155 |               720 |             0.5 |
+|             1650 |               nan |             0.7 |
+|               84 |                59 |             0.3 |
+|              373 |               181 |             0.3 |
+|               35 |               nan |             0.2 |
+
+
+|   DEMAND.LOSS.MW |   OUTAGE.DURATION |   PI.UTIL.OFUSA |
+|-----------------:|------------------:|----------------:|
+|              nan |              3060 |             2.2 |
+|              nan |                 1 |             2.2 |
+|              nan |              3000 |             2.1 |
+|              nan |              2550 |             2.2 |
+|              250 |              1740 |             2.2 |
+|              nan |              1860 |             2.1 |
+|              nan |              2970 |             2.1 |
+|               75 |              3960 |             2.1 |
+|               20 |               155 |             2.2 |
+|              nan |              3621 |             2.3 |
+I believe that The MW.LOSS column is MAR
 
 # Missingness Dependency
+0.8363394331374345 differnece observed of the PI.UTIL.OFUSA if MW is missing or not this has an extremely low p values of 0.01
+and can be seen by this grph
+<iframe
+  src="assets/DiffMeans_PI.UTIL.OFUSA.html"
+  width="600"
+  height="600"
+  frameborder="0"
+></iframe>
+
+
+128.76779051172707 differnece observed of the OUTAGE.DURATION if MW is missing or not this has an extremely low p values of 0.678
+and can be seen by this grph
+<iframe
+  src="assets/DiffMeans_OUTAGE.DURATION.html"
+  width="600"
+  height="600"
+  frameborder="0"
+></iframe>
+
+
+
 <iframe
   src="assets/PI.UTIL.OFUSA_MISSING.html"
   width="600"
@@ -60,7 +117,7 @@ Each additional minute the powers out for more problems arrise. This makes knowi
 # Hypothesis Testing
 
 Clearly state your null and alternative hypotheses, your choice of test statistic and significance level, the resulting 
-p
+p 0.0005 we reject the null hypothesis that 
 -value, and your conclusion. Justify why these choices are good choices for answering the question you are trying to answer.
 
 Optional: Embed a visualization related to your hypothesis test in your website.
