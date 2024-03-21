@@ -38,12 +38,6 @@ Each additional minute the powers out for more problems arrise. This makes knowi
 
 Throughout this process Outage Duration will used as a metric of the serverity of a power outage. Here you see how most power outages are fixed quickly.
 
-<iframe
-  src="assets/REGULATED.html"
-  width="600"
-  height="600"
-  frameborder="0"
-></iframe>
 
 # Bivariate Analysis
 <iframe
@@ -58,7 +52,17 @@ One factor that I thought might be indicative of a major poweroutage is the pric
 
 # Interesting Aggregates
 
-|   Central |   East North Central |   Northeast |   Northwest |   South |   Southeast |   Southwest |   West |   West North Central |\n|----------:|---------------------:|------------:|------------:|--------:|------------:|------------:|-------:|---------------------:|\n|         2 |                    1 |           9 |           1 |       1 |           1 |         nan |      1 |                  nan |\n|         5 |                    3 |           2 |           2 |       5 |           5 |           4 |      1 |                    5 |
+| CLIMATE.REGION     |   False |   True |
+|:-------------------|--------:|-------:|
+| Central            |       2 |      5 |
+| East North Central |       1 |      3 |
+| Northeast          |       9 |      2 |
+| Northwest          |       1 |      2 |
+| South              |       2 |      5 |
+| Southeast          |       1 |      6 |
+| Southwest          |     nan |      4 |
+| West               |       1 |      1 |
+| West North Central |     nan |      5 |
 
 Here you can see a pivot tbale of where dereguated states are located. You can see that theyre consentrated in the northeast.
 
@@ -143,12 +147,12 @@ My prediction goal is to predict the severity in terms of duration of a power ou
 Note: Make sure to justify what information you would know at the “time of prediction” and to only train your model using those features. For instance, if we wanted to predict your final exam grade, we couldn’t use your Project 4 grade, because Project 4 is only due after the final exam! Feel free to ask questions if you’re not sure.
 
 # Baseline Model
-My baseline model is a classic Logistic Regression with a numerical varibles for total number of customers and a categorical varible that is hot encoded for the cause of the outage. I chose these two varibles as the cause of an outage seems like it would highly preduict the length of it. Since intentional attack are usually very quick to fix while weather takes longer. I chose total customers in the state as states with a large amount of customers will have more complex electrical grids that might be harder t fix.
+My baseline model is a Lasso Regression with a numerical varibles for total number of customers and a categorical varible that is hot encoded for the cause of the outage. I chose these two varibles as the cause of an outage seems like it would highly preduict the length of it. Since intentional attack are usually very quick to fix while weather takes longer. I chose total customers in the state as states with a large amount of customers will have more complex electrical grids that might be harder t fix.
 
-After running the model I get a mean absolute error of 8305.16. This is very large and points to a bad model. You can see its difficulty in the graph below.
+After running the model I get a mean absolute error of 7,431. This is very large and points to a bad model. You can see its difficulty in the graph below.
 
 <iframe
-  src="assets/Baseline_model.html"
+  src="assets/New_Baseline_model.html"
   width="600"
   height="600"
   frameborder="0"
@@ -159,7 +163,7 @@ Describe your model and state the features in your model, including how many are
 Tip: Make sure to hit all of the points above: many projects in the past have lost points for not doing so.
 
 # Final Model
-For My Final model I changed away from a Logistic Regression to a Random Forest Regression as it had a lower mean absolute error. In addition I chnaged my numerical varibles from [] to [] and standarzied them. I also added categorical varibles, such as []. I engineered [] varible by quartiled to reduce the effect of its outliers. To find the best hyperparamters I used GridSearchCV and found keeping most the deflaut was best. Overall these chnages decreased my mean absolute error form 8,305 to 2,570.
+For My Final model I changed away from a Lasso Regression to a Random Forest Regression as Lasso assumes a linear relationship between features and target where that might not be the case here, it also helped that Random Forest Regression a lower mean absolute error. In addition I chnaged my numerical varibles from 'TOTAL.CUSTOMER' to 'POPDEN_RURAL' because I TOTAL.CUSTOMER's isnt as indicitive of a more complex power grid as population desity would be. In addition, I standarized 'POPDEN_RURAL'. In exploritory alanysis I found that alout varied from region to region so I added a categorical varible 'CLIMATE.REGION'. I wanted to factor in the wealth of a state so I engineered the 'PC.REALGSP.REL' varible by quartiled to reduce the effect of its outliers. To find the best hyperparamters I used GridSearchCV and found keeping most the deflauts was best. Overall these chnages decreased my mean absolute error form 7,431 to 2,570.
 
 <iframe
   src="assets/Final_model.html.html"
@@ -176,7 +180,7 @@ Describe the modeling algorithm you chose, the hyperparameters that ended up per
 Optional: Include a visualization that describes your model’s performance, e.g. a confusion matrix, if applicable.
 
 # Fairness Analysis
-I wanted to check the fairness of my model in predicting the length of a power outage between poor and rich states. I did this by introducing a binary varible "Rich_State" that is True if the state's per capita GDP is greater than the USA capita GDP False otehrwise.
+I wanted to check the fairness of my model in predicting the length of a power outage between poor and rich states. I did this by introducing a binary varible "Rich_State" that is True if the state's per capita GDP is greater than the USA capita GDP False otherwise.
 
 **NULL HYPOTHESIS**: The model mean absolute error does not varry signifactly between states with a high per capita GDP as for states with a low GDP per capita
 
