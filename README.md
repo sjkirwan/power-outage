@@ -3,7 +3,7 @@
 ## Introduction
 Lights working and the internet running are often taken for granted until they suddenly disappear during a power outage. In this project, I aim to delve into a comprehensive dataset related to power outages. This dataset includes crucial information on various aspects of outages, such as electricity consumption, regional economic characteristics, regional land-use patterns, regional climate data, and most importantly, outage events. My goal is to find the factors that make some poweroutages more sever then others and well as use these fatcors to predict a power ouatges severity
 
-The dataset is from University of Purdue since 2018. The data is divided into five sections:such as electricity consumption, regional economic characteristics, regional land-use patterns, regional climate data, and most importantly, outage events. The dataframe for Poweroutages has 1,526 rows. Each row represents an outage that happened in a state. If a poweroutage affects more than one state their will be a row for each event. For further research purposes, I added two columns represnting a timestamp for the start of and outage and end. Most importantly I am adding a columns represnting wether a State's power sector is classified as regulated. This is becuase in teh past a major cause of teh Claifornia's rolling blakcouts in the early 2000s was the deregulation of its power sector. I want to test if this is an outlier ouccurance or maybe states that have a deregulate dpower sector have more outages. 
+The dataset is from University of Purdue since 2018 [https://engineering.purdue.edu/LASCI/research-data/outages]. The data is divided into five sections:such as electricity consumption, regional economic characteristics, regional land-use patterns, regional climate data, and most importantly, outage events. The dataframe for Poweroutages has 1,526 rows. Each row represents an outage that happened in a state. If a poweroutage affects more than one state their will be a row for each event. For further research purposes, I added two columns represnting a timestamp for the start of and outage and end. Most importantly I am adding a columns represnting wether a State's power sector is classified as regulated. This is becuase in teh past a major cause of teh Claifornia's rolling blakcouts in the early 2000s was the deregulation of its power sector. I want to test if this is an outlier ouccurance or maybe states that have a deregulate dpower sector have more outages. 
 
 ## Project Steps
 1. **Data Cleaning and Exploratory Data Analysis**: We will start by cleaning the dataset and conducting exploratory data analysis to obtain basic information about the data and explore relationships between columns.
@@ -47,8 +47,11 @@ Each additional minute the powers out for more problems arrise. This makes knowi
 |   Central |   East North Central |   Northeast |   Northwest |   South |   Southeast |   Southwest |   West |   West North Central |\n|----------:|---------------------:|------------:|------------:|--------:|------------:|------------:|-------:|---------------------:|\n|         2 |                    1 |           9 |           1 |       1 |           1 |         nan |      1 |                  nan |\n|         5 |                    3 |           2 |           2 |       5 |           5 |           4 |      1 |                    5 |
 
 Here you can see a pibvot tbale of where dereguated states are located. You can see that theyre consentrated in the northeast.
+
 ## Assessment of Missingness
+
 # NMAR Analysis
+
 |   DEMAND.LOSS.MW |   OUTAGE.DURATION |   PI.UTIL.OFUSA |
 |-----------------:|------------------:|----------------:|
 |                0 |              1548 |             0.3 |
@@ -75,6 +78,8 @@ Here you can see a pibvot tbale of where dereguated states are located. You can 
 |               75 |              3960 |             2.1 |
 |               20 |               155 |             2.2 |
 |              nan |              3621 |             2.3 |
+
+
 I believe that The MW.LOSS column is MAR
 
 # Missingness Dependency
@@ -128,6 +133,63 @@ Optional: Embed a visualization related to your hypothesis test in your website.
   height="600"
   frameborder="0"
 ></iframe>
+
+# Framing a Prediction Problem
+My prediction goal is to predict the severity in terms of duration of a power outage. I'm choosing to use outage duration as the severity metric as MW and customers affected are both missing substantial data entires. This mdoel will be a regression model. I will evaluate the effectiveness with mean absolute error. Most varibles will be known at the time of the prediction.
+
+Note: Make sure to justify what information you would know at the “time of prediction” and to only train your model using those features. For instance, if we wanted to predict your final exam grade, we couldn’t use your Project 4 grade, because Project 4 is only due after the final exam! Feel free to ask questions if you’re not sure.
+
+# Baseline Model
+My baseline model is a classic Logistic Regression with a numerical varibles for total number of customers and a categorical varible that is hot encoded for the cause of the outage. I chose these two varibles as the cause of an outage seems like it would highly preduict the length of it. Since intentional attack are usually very quick to fix while weather takes longer. I chose total customers in the state as states with a large amount of customers will have more complex electrical grids that might be harder t fix.
+
+After running the model I get a mean absolute error of 8305.16. This is very large and points to a bad model. You can see its difficulty in the graph below.
+
+<iframe
+  src="assets/Baseline_model.html"
+  width="600"
+  height="600"
+  frameborder="0"
+></iframe>
+
+Describe your model and state the features in your model, including how many are quantitative, ordinal, and nominal, and how you performed any necessary encodings. Report the performance of your model and whether or not you believe your current model is “good” and why.
+
+Tip: Make sure to hit all of the points above: many projects in the past have lost points for not doing so.
+
+# Final Model
+2570.33
+
+<iframe
+  src="assets/Final_model.html.html"
+  width="600"
+  height="600"
+  frameborder="0"
+></iframe>
+
+
+State the features you added and why they are good for the data and prediction task. Note that you can’t simply state “these features improved my accuracy”, since you’d need to choose these features and fit a model before noticing that – instead, talk about why you believe these features improved your model’s performance from the perspective of the data generating process.
+
+Describe the modeling algorithm you chose, the hyperparameters that ended up performing the best, and the method you used to select hyperparameters and your overall model. Describe how your Final Model’s performance is an improvement over your Baseline Model’s performance.
+
+Optional: Include a visualization that describes your model’s performance, e.g. a confusion matrix, if applicable.
+
+# Fairness Analysis
+I wanted to check the fairness of my model in predicting the length of a power outage between poor and rich states. I did this by introducing a binary varible "Rich_State" that is True if the state's per capita GDP is greater than the USA capita GDP False otehrwise.
+
+**NULL HYPOTHESIS**: The model mean absolute error does not varry signifactly between states with a high per capita GDP as for states with a low GDP per capita
+
+**ALTERNATIVE HYPOTHESIS**: The model's has a higher mean absolute error for Poorer states and Richer states
+
+To test this I am choosing a p-value of 0.05 and a test statistic of differenc in means 
+
+<iframe
+  src="assets/fairness_test.html"
+  width="600"
+  height="600"
+  frameborder="0"
+></iframe>
+
+We get a p value of 0.001 clearly we can reject the Null Hypothesis. This means our model has a higher mean absolute error for Poorer states and Richer states. This could be do to poorer state having more varied power outages as they dont have the same amount of money to invest in the power grid.
+
 
 # power-outage
 
