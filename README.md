@@ -33,13 +33,22 @@ Throughout this process, 'OUTAGE.DURATION' will used as a metric of the severity
 
 ### Bivariate Analysis
 <iframe
-  src="assets/REGULATED_groups.html"
+  src="assets/Duration_vs_Price.html"
   width="800"
   height="600"
   frameborder="0"
 ></iframe>
 
 One factor that might indicate a significant power outage is the price of electricity. I thought higher prices might mean power companies are trying to encourage less use. While there isn't a major correlation between these two, when the regulatory variable is added, you can see clearly that unregulated states have higher electricity prices!!
+
+<iframe
+  src="assets/Mean_Outage_Duration_Cause.html"
+  width="800"
+  height="600"
+  frameborder="0"
+></iframe>
+
+Another factor that might indicate a significant power outage is the cause of the outage. In this chart, you can see that the average outage time varies drastically between each of the possible cause categories.
 
 
 ## Interesting Aggregates
@@ -56,14 +65,14 @@ One factor that might indicate a significant power outage is the price of electr
 | West               |       1 |      1 |
 | West North Central |     nan |      5 |
 
-Here, you can see a pivot table showing the number of deregulated states in each region. Its intresting that there are concentrated in the northeast.
+Here, you can see a pivot table showing the number of deregulated power(False being deregulated True meaning regulated) states in each region. From this table its clear that states in the Northeast are overwhelmingly deregulated.
 
 ## Assessment of Missingness
 
 ### NMAR Analysis
 The column with the most missing columns is the 'DEMAND.LOSS.MW' column below. I took the first and last ten rows of the data frame with the 'DEMAND.LOSS.MW,' and two other columns that look like they might be related.
 
-**FIRST TEN COLUMNS**
+**FIRST TEN ROWS**
 
 |   DEMAND.LOSS.MW |   OUTAGE.DURATION |   PI.UTIL.OFUSA |
 |-----------------:|------------------:|----------------:|
@@ -78,7 +87,7 @@ The column with the most missing columns is the 'DEMAND.LOSS.MW' column below. I
 |              373 |               181 |             0.3 |
 |               35 |               nan |             0.2 |
 
-**LAST TEN COLUMNS**
+**LAST TEN ROWS**
 
 |   DEMAND.LOSS.MW |   OUTAGE.DURATION |   PI.UTIL.OFUSA |
 |-----------------:|------------------:|----------------:|
@@ -118,16 +127,25 @@ The 'DEMAND.LOSS.MW' columns' missingness might be related to the 'OUTAGE.DURATI
 ## Hypothesis Testing
 
 ### Hypothesis Testing
+
+<iframe
+  src="assets/Mean_Outage_Duration.html"
+  width="800"
+  height="600"
+  frameborder="0"
+></iframe>
+
 **NULL HYPOTHESIS**: The distribution of the length of a power outage in regulated states is the same as in deregulated states
 
 **ALTERNATIVE HYPOTHESIS**: Deregulated states' power outages last longer than regulated states.
 
 Since 'OUTAGE.DURATION' is numerical data, I used the difference in mean as test statistics with a significance level of 0.05
 
-The observed difference in the mean is []
+The observed difference in the mean is -503.5
+
 
 <iframe
-  src="assets/hypothesis_test.html"
+  src="assets/FINAL_HYPOTHESIS_TEST.html"
   width="800"
   height="600"
   frameborder="0"
